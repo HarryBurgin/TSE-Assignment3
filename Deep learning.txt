@@ -1,0 +1,43 @@
+deep learning
+uses neural networks
+inspired by human brain
+was shown on lecture slides, so i think they want us to use something like this
+
+works by changing weights
+forward propagation(uses weights to calculate outputs), back propagation(uses difference from expected and actual output to change weights and biasis)
+Gradient Descent 
+calculate loss using loss function
+
+sigmoid or tanh functions used for activation function - 
+	decides wether a neurone is activated or not
+
+leaky reLU function, less computationally expensive
+
+optimisers will change your model based on the output of the loss func
+
+
+
+
+
+
+
+summary:
+activation func will calculate how much neurones will contribute to next layer
+(sigmoid, reLU)
+loss func will calculate how wrong predicted outputs are compared to expected output
+(squared error loss)
+optimisers will adjust parameters(weights) to minimise loss func, making the model as optimized as possible
+(gradient descent, SGD)
+
+learning rate ensures that steps taken to change weight are not too large
+model parameter - values learned from data and define skill of model
+(weights)
+model hyperparameter - used in processes to estimate model parameters
+(learning rate, epochs)
+
+epoch - when the entire data set is passed forward and backward through the neural network, only once
+(need to read song lyrics more than once to learn them)
+batches - data set split into batches when it is too large to pass into model all at once
+itererations - number of batches needed to complete one epoch
+
+make sure overfitting does not occur
