@@ -11,6 +11,6 @@ def listCreation():
     file = csv.DictReader(fileName)
     #Iterates each row then appends dataset
     for col in file:
-        dataset.append(col['review'])
-        dataset.append(col['sentiment'])
+        dataset.append([col['review'],col['sentiment']])
+        
 listCreation()
