@@ -15,6 +15,26 @@ leaky reLU function, less computationally expensive
 
 optimisers will change your model based on the output of the loss func
 
+plain neural networks cannot handle sequential data(like sentences)
+need a learning framework able to deal with variable length sequences, maintain sequence order,
+share parameters across the sequence, keep track of long term dependancies
+recurrent neural networks
+
+
+
+
+
+
+
+
+
+on TSE:
+split reviews up into sentences
+	RNN and BTT
+	LSTM/GRNN - work well with sentiment analysis
+
+
+
 
 
 
