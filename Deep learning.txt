@@ -60,4 +60,11 @@ epoch - when the entire data set is passed forward and backward through the neur
 batches - data set split into batches when it is too large to pass into model all at once
 itererations - number of batches needed to complete one epoch
 
-make sure overfitting does not occur
+make sure overfitting does not occur - where model becomes too specialised to the dataset
+
+validation testing - cross validation stops overfitting
+
+give reasons for why we split the data the way we do
+
+dropout - can be used during optimisation
+

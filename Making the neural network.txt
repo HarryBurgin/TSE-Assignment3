@@ -1,0 +1,13 @@
+## Need to learn derivatives, maybe???
+
+Making the neural network
+
+	Make adding and taking away nodes and layers easy so that quick tests can be done
+to determine best number of nodes, hidden layers etc
+
+	Choose activation func for a reason
+	Same for all other funcs
+	Can use multiple functions in one neural network, e.g. combining reLU and sigmoid
+
+		
+	
