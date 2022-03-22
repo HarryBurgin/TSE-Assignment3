@@ -1,0 +1,8 @@
+if we can use a small data set
+
+ask what we have to reference, e.g. learning material
+
+use keywords on github, e.g. UPDATE
+
+should we use pull requests
+
