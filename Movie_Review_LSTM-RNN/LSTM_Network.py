@@ -44,7 +44,16 @@ for i in range (len(dataset)):
 
 x_train, x_test, y_train, y_test = train_test_split(inputData, resultData, test_size=0.20, random_state=0)
 
-for i in range(len(y_test)):
-    print(y_test[i])
+#for i in range(len(y_test)):
+    #print(y_test[i])
 
+tokenize = Tokenizer(num_words=5000)
+#create a dictionary containing words and corresponding unique index
+tokenize.fit_on_texts(x_train)
 
+#use the above dictionary to convert the training and test data reviews into indexes
+x_train = tokenize.texts_to_sequences(x_train)
+x_test = tokenize.texts_to_sequences(x_test)
+
+for i in range(len(x_train)):
+    print(x_train[i])
