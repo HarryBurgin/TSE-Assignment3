@@ -1,6 +1,8 @@
 #Modules
 import csv
 import re
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 #Global list defined
 global dataset
@@ -26,3 +28,17 @@ def dataCleanup():
         
 listCreation()
 dataCleanup()
+
+inputData = []
+resultData= []
+
+for i in range (len(dataset)):
+    inputData.append(dataset[i][0])
+
+for i in range (len(dataset)):
+    resultData.append(dataset[i][1])
+
+X_train, X_test, y_train, y_test = train_test_split(inputData, resultData, test_size=0.05, random_state=0)
+
+for i in range(len(y_test)):
+    print(y_test[i])
