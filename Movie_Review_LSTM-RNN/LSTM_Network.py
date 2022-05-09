@@ -3,6 +3,7 @@ import csv
 import re
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from keras.preprocessing.text import Tokenizer
 
 #Global list defined
 global dataset
