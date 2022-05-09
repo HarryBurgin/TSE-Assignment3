@@ -41,7 +41,7 @@ for i in range (len(dataset)):
     else:
         resultData.append(1)
 
-X_train, X_test, y_train, y_test = train_test_split(inputData, resultData, test_size=0.05, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(inputData, resultData, test_size=0.20, random_state=0)
 
 for i in range(len(y_test)):
     print(y_test[i])
