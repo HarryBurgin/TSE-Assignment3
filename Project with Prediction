@@ -1,1 +1,152 @@
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+from tensorflow.keras.preprocessing.text import Tokenizer
 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+## Used to read csv data file
+import csv
+import re
+
+inputData = []
+resultData= []
+
+
+#Function to create a list of reviews and a list of sentiments (+ve/-ve)
+def dataCreation(inputData, resultData):
+    print("Extracting Data...")
+    #Opens the csv file
+    fileName = open('IMDB Dataset.csv', 'r', encoding='utf-8')
+    file = csv.DictReader(fileName)
+    #Iterates each row then appends dataset
+    for col in file:
+        inputData.append(col['review'])
+        if col['sentiment'] == 'positive':
+            resultData.append(1)
+        elif col['sentiment'] == 'negative':
+            resultData.append(0)
+        else:
+            resultData.append(col['sentiment'])                          
+
+    print("Cleaning Data...")
+    #Iterates through the review
+    for i in range(len(inputData)):
+        #Replaces any text between <> with a blank
+        inputData[i] = re.sub('<.*?>', '', inputData[i])
+
+def trainModel():
+    dataCreation(inputData, resultData)
+    
+    ## X is review and y is sent
+    ## Split into train and test data
+    x_train, x_test, y_train, y_test = train_test_split(inputData, resultData, test_size=0.01, random_state=0)
+
+    print("Tokenizing Data...")
+    token = Tokenizer(lower = True)
+    token.fit_on_texts(x_train)
+    x_train = token.texts_to_sequences(x_train)
+    x_test = token.texts_to_sequences(x_test)
+
+    ## Limiting word count and adding padding
+    maxWords = 120 # Sets max number of words
+    total_words = len(token.word_index) + 1
+
+    for review in range(len(x_test)): # Loops through reviews
+        if len(x_test[review]) > maxWords: # If length of review is above max words
+            x_test[review] = x_test[review][0:120] # Take a slice of the list starting fromindex 0 to 120
+
+    for review in range(len(x_test)): # Loop through review
+        while len(x_test[review]) < maxWords: # While the reviews length is below 120
+            x_test[review].append(0) # Append another 0
+
+    for review in range(len(x_train)):
+        if len(x_train[review]) > maxWords:
+            x_train[review] = x_train[review][0:120]
+
+    for review in range(len(x_train)):
+        while len(x_train[review]) < maxWords:
+            x_train[review].append(0)
+
+    print("Creating Model...")
+    EMBED_DIM = 32
+    LSTM_OUT = 64
+
+    model = keras.Sequential()
+    model.add(layers.Embedding(total_words, EMBED_DIM, input_length = maxWords))
+    model.add(layers.LSTM(LSTM_OUT, dropout=0.75, recurrent_dropout=0.5))
+    model.add(layers.Dense(1, activation='sigmoid'))
+
+    print("Compiling Model...")
+    model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+    print("Training Model...")
+    model.fit(x_train, y_train, batch_size = 128, epochs = 5, verbose = 1)
+
+    print("Evaluating Model...")
+    model.evaluate(x_test, y_test, batch_size = 128, verbose = 2)
+
+    model.save('my_model.h5')
+
+def predictReview(model, review):
+    for i in range(len(review)):
+        #Replaces any text between <> with a blank
+        review[i] = re.sub('<.*?>', '', review[i])
+
+    print("Tokenizing Input...")
+    token = Tokenizer(lower = True)
+    token.fit_on_texts(review)
+    review = token.texts_to_sequences(review)
+    
+    ## Limiting word count and adding padding
+    maxWords = 120 # Sets max number of words
+    total_words = len(token.word_index) + 1
+    
+    for i in range(len(review)): # Loops through reviews
+        if len(review[i]) > maxWords: # If length of review is above max words
+            review[i] = review[i][0:120] # Take a slice of the list starting fromindex 0 to 120
+
+    for i in range(len(review)): # Loop through review
+        while len(review[i]) < maxWords: # While the reviews length is below 120
+            review[i].append(0) # Append another 0
+
+    prediction = model.predict(review)
+    return prediction
+
+def main():
+    print("------------------------------")
+    print("Move Review Sentiment Analysis")
+    print("------------------------------")
+    try:
+        current_model = tf.keras.models.load_model('my_model.h5')
+        print("Existing model found!")
+        print(current_model.summary())
+    except:
+        print("No model found... Beginning training process")
+        trainModel()
+        current_model = tf.keras.models.load_model('my_model.h5')
+
+    looping = True
+    while looping:
+        print("Options:")
+        print("     1. Evaluate Review")
+        print("     2. Train New Model")
+        print("     3. Quit")
+        choice = input("Select Option (1 - 3): ")
+        if choice == "1":
+            reviews = []
+            reviews.append("I have no idea who wrote this, but god it feels like it's meant for kids. Not scary, all over the place with irrelevant stories, boring from beginning to ...end? Could not tell, turned it off after the witch flew across town to visit the little girl. Don't care what happens next. Hollywood at its best.")
+            reviews.append("Yikes. Doctor sleep is a fitting name cuz you're gonna wanna by the time this movies finally over. It feels so much longer than it is. It's corny, cringy, the dialogue is bad, the characters are not believable, the story is predictable and goofy as hell. It's critically just not a good film. But even worse, it's not an interesting or entertaining one.")
+            reviews.append("Is it me? I thought this Film was so slow and mixed up I was so bored i fell asleep what a waist of time..Stanley Kubrick would be turning in his grave at this one..I should have painted a door and watched it dry that would've been more enjoyable.")
+            reviews.append("Ok first of all I never read the books I just go to the movies so I never knew until I saw this movie what the shining was and this movie filled in all the gaps that I didn't understand from the first one and I thought it was pretty good it did make me jump a few times in my seat which is really hard to do considering how desensitized I am from seeing so many I don't think people are giving this one enough credit by going to the theater to see it but I'm sure it will do better in video sales.")
+            reviews.append("I was saving this film aside for quite a while, because I assumed it's just another horror movie (I don't scare easily so I find the horror genre kinda boring), and I finally watched it yesterday... well, the truth is: it's more fantasy than horror, and I was surprised by how brilliant & enjoyable it was!")
+            reviews.append("Fantastic Film")
+            print(predictReview(current_model, reviews))
+        if choice == "2":
+            trainModel()
+            current_model = tf.keras.models.load_model('my_model.h5')
+        if choice == "3":
+            looping = False
+    
+main()
